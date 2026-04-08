@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fall Detection Dashboard</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: Arial;
+            background: #f0f2f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h1 { color: #333; font-size: 26px; margin-bottom: 8px; }
+        .subtitle { color: #888; margin-bottom: 24px; font-size: 14px; }
+        .user { color: #555; font-size: 13px; margin-bottom: 24px; }
+
+        .status-box {
+            border-radius: 10px;
+            padding: 24px 20px;
+            margin-bottom: 28px;
+        }
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status-icon  { font-size: 42px; margin-bottom: 12px; }
+        .status-title { font-size: 20px; font-weight: bold; margin-bottom: 6px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .status-sub   { font-size: 13px; opacity: 0.8; }
+
+        .pulse {
+            display: inline-block;
+            width: 12px; height: 12px;
+            border-radius: 50%;
+            background: #28a745;
+            animation: pulse 1.5s infinite;
+            flex-shrink: 0;
+        }
+        @keyframes pulse {
+            0%   { box-shadow: 0 0 0 0   rgba(40,167,69,0.6); }
+            70%  { box-shadow: 0 0 0 10px rgba(40,167,69,0);   }
+            100% { box-shadow: 0 0 0 0   rgba(40,167,69,0);   }
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #856404;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 12px;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .btn:hover   { opacity: 0.88; }
+        .btn-start  { background: #28a745; color: white; }
+        .btn-stop   { background: #dc3545; color: white; }
+        .btn-logout { background: #6c757d; color: white; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h1>Fall Detection Dashboard</h1>
+    <p class="subtitle">Smart Human Fall Detection &amp; Alert System</p>
+    <p class="user">Logged in as: <strong>{{ session.get('username', 'User') }}</strong></p>
+
+    {% if detection_running %}
+
+        <div class="status-box status-active">
+            <div class="status-icon">📹</div>
+            <div class="status-title">
+                <span class="pulse"></span> Detection Active
+            </div>
+            <div class="status-sub">System is monitoring for falls in real time</div>
+        </div>
+
+        <div class="info-box">
+            The detection window is now running on your screen.<br>
+            Press <strong>ESC</strong> in the detection window to stop,
+            or click <strong>Stop Detection</strong> below.
+        </div>
+
+        <form action="/stop_detection" method="POST">
+            <button type="submit" class="btn btn-stop">Stop Detection</button>
+        </form>
+
+    {% else %}
+
+        <div class="status-box status-inactive">
+            <div class="status-icon">⏸</div>
+            <div class="status-title">Detection Inactive</div>
+            <div class="status-sub">Click Start Detection to begin monitoring</div>
+        </div>
+
+        <form action="/start_detection" method="POST">
+            <button type="submit" class="btn btn-start">Start Detection</button>
+        </form>
+
+    {% endif %}
+
+    <a href="/logout" class="btn btn-logout">Logout</a>
+</div>
+</body>
+</html>
